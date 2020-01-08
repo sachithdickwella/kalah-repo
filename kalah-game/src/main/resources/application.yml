@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: kalah-game
+  redis:
+    port: 6379
