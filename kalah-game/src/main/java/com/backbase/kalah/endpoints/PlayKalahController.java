@@ -1,7 +1,10 @@
 package com.backbase.kalah.endpoints;
 
 import com.backbase.kalah.records.GameStatus;
+import com.backbase.kalah.repos.GameStatusRepo;
+import com.backbase.kalah.util.IdGenerator;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +23,34 @@ import javax.servlet.http.HttpServletRequest;
 public class PlayKalahController {
 
     /**
+     * {@link GameStatusRepo} injectable instance.
+     */
+    private GameStatusRepo repo;
+
+    /**
+     * Constructor to {@link Autowired} or inject to the instance variables.
+     *
+     * @param repo instance of {@link GameStatusRepo} inject from the
+     *             {@link org.springframework.context.ApplicationContext}
+     */
+    @Autowired
+    public PlayKalahController(GameStatusRepo repo) {
+        this.repo = repo;
+    }
+
+    /**
      * @return an instance of {@link ResponseEntity} wrapping a {@link GameStatus} object.
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GameStatus> create(@NotNull HttpServletRequest request) {
+        final long randomId = IdGenerator.getRandomId();
+        var builder = GameStatus.builder()
+                .id(randomId)
+                .url(String.format("%s/%d", request.getRequestURL(), randomId));
+
+        repo.save(builder.board().build());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(GameStatus.builder()
-                        .id(1L)
-                        .url(String.format("%s/%d", request.getRequestURL(), 1))
-                        .build());
+                .body(builder.build());
     }
 
     /**
@@ -40,9 +62,8 @@ public class PlayKalahController {
     public ResponseEntity<GameStatus> move(@PathVariable("gameId") long gameId,
                                            @PathVariable("pitId") int pitId,
                                            @NotNull HttpServletRequest request) {
-        return ResponseEntity.ok(GameStatus.builder()
-                .id(gameId)
-                .url(String.format("%s/%d", request.getRequestURL(), gameId))
-                .build());
+        return repo.findById(gameId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
