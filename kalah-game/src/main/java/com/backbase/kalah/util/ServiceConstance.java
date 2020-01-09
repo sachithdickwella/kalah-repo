@@ -34,4 +34,35 @@ public interface ServiceConstance {
      * per week.
      */
     long TIME_TO_LIVE = 3600L * 24 * 7;
+
+    /**
+     * Enum representation of each of the player during a game.
+     */
+    enum Player {
+        PLAYER_1(1), PLAYER_2(2);
+
+        /**
+         * Numeric representation to active player.
+         */
+        private int number;
+
+        /**
+         * The private constructor for initialize {@link #number} instance variable
+         * of the enum.
+         *
+         * @param number value for each of the enum.
+         */
+        Player(int number) {
+            this.number = number;
+        }
+
+        /**
+         * Get the numerical value of each of the player.
+         *
+         * @return int {@link #number} of the enum.
+         */
+        public int number() {
+            return this.number;
+        }
+    }
 }

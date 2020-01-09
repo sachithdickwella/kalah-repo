@@ -1,5 +1,6 @@
 package com.backbase.kalah.endpoints;
 
+import com.backbase.kalah.PlayKalah;
 import com.backbase.kalah.endpoints.util.ControllerUtils;
 import com.backbase.kalah.records.GameStatus;
 import com.backbase.kalah.repos.GameStatusRepo;
@@ -31,19 +32,26 @@ public class PlayKalahController {
      * {@link ControllerUtils} injectable instance.
      */
     private ControllerUtils utils;
+    /**
+     * {@link PlayKalah} injectable instance.
+     */
+    private PlayKalah playKalah;
 
     /**
      * Constructor to {@link Autowired} or inject to the instance variables.
      *
-     * @param repo  instance of {@link GameStatusRepo} inject from the
-     *              {@link org.springframework.context.ApplicationContext}
-     * @param utils instance of {@link ControllerUtils} inject from the
-     *              {@link org.springframework.context.ApplicationContext}
+     * @param repo      instance of {@link GameStatusRepo} inject from the
+     *                  {@link org.springframework.context.ApplicationContext}
+     * @param utils     instance of {@link ControllerUtils} inject from the
+     *                  {@link org.springframework.context.ApplicationContext}
+     * @param playKalah instance of {@link PlayKalah} inject from the
+     *                  {@link org.springframework.context.ApplicationContext}
      */
     @Autowired
-    public PlayKalahController(GameStatusRepo repo, ControllerUtils utils) {
+    public PlayKalahController(GameStatusRepo repo, ControllerUtils utils, PlayKalah playKalah) {
         this.repo = repo;
         this.utils = utils;
+        this.playKalah = playKalah;
     }
 
     /**
@@ -80,7 +88,9 @@ public class PlayKalahController {
     public ResponseEntity<GameStatus> move(@PathVariable("gameId") long gameId,
                                            @PathVariable("pitId") int pitId) {
         return repo.findById(gameId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(gameStatus -> {
+                    playKalah.makeMove(gameStatus, pitId);
+                    return ResponseEntity.ok(repo.save(gameStatus));
+                }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

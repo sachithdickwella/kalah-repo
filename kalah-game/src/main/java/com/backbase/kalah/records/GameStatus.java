@@ -1,5 +1,6 @@
 package com.backbase.kalah.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,17 +13,19 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.backbase.kalah.util.ServiceConstance.*;
+import static com.backbase.kalah.util.ServiceConstance.Player.PLAYER_1;
+import static com.backbase.kalah.util.ServiceConstance.Player.PLAYER_2;
 import static java.util.AbstractMap.SimpleEntry;
 
 /**
  * This class represent the entire game status as well as the {@link #id} and the
  * {@link #url} values of the game instance.
  *
- * Implemented the builder pattern to instance creation and management in memory.
- * The objects crete with the class are mutable hence ability to change internal
- * status of its {@link #board} attribute. This attribute represents the entire
- * <b>Kalah</b> board status and represent the latest board configuration by integer
- * numbers.
+ * Implemented the builder pattern to instance creation and management in memory with
+ * ease. The objects create with the class are mutable hence ability to change internal
+ * status of its {@link #board} and ${@link #player} attributes. These attributes represent
+ * the entire <b>Kalah</b> board status and represent the latest board configuration by
+ * integer numbers.
  *
  * Decorated with Jackson annotations like {@link JsonInclude} in order to exclude
  * {@code null} values from the serialized object and {@link JsonIgnoreProperties}
@@ -55,6 +58,16 @@ public class GameStatus {
      */
     @JsonProperty("status")
     private Map<Integer, String> board;
+    /**
+     * {@code player} number of the active player. Only two possible value are there in
+     * this attribute. Which are {@code 1} & {@code 2} depending on the which players
+     * round remains to play. It limits to two different value hence the game allows only
+     * two players to play at a time.
+     *
+     * Initialized with custom default value {@link Player#PLAYER_1}.
+     */
+    @JsonIgnore
+    private Player player = PLAYER_1;
 
     /**
      * Start the build process of the instance by returning a {@link Builder} instance.
@@ -190,5 +203,25 @@ public class GameStatus {
     @SuppressWarnings("unused")
     public Map<Integer, String> getBoard() {
         return this.board;
+    }
+
+    /**
+     * Return the current {@link #player} or Toggle the player number depending on each round's
+     * progress, if the {@code toggle} parameter value is {@code true}.
+     *
+     * Don't require conventional getter method though, hence, {@link #player} is ignored during
+     * the serialization and explicit invocations are available.
+     *
+     * @param toggle {@code boolean} value to define whether {@link #player} value toggle or not.
+     *                              Varargs has used to avoid unnecessary value pass when {@code toggle}
+     *                              is not required.
+     * @return {@link Player} value of which player is active now.
+     */
+    public Player getPlayer(boolean... toggle) {
+        if (toggle != null && toggle[0]) {
+            if (player.equals(PLAYER_1)) return player = PLAYER_2;
+            else return player = PLAYER_1;
+        }
+        return player;
     }
 }
