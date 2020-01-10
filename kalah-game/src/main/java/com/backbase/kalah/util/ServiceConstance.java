@@ -14,7 +14,7 @@ public interface ServiceConstance {
     /**
      * Initial seed count configuration for each of the pit.
      */
-    String SEEDS_PER_PIT = "6";
+    int SEEDS_PER_PIT = 6;
     /**
      * Store index of each of the players. This is a 1 based index and only
      * represent the base value of each of the index.
@@ -63,6 +63,15 @@ public interface ServiceConstance {
          */
         public int number() {
             return this.number;
+        }
+
+        /**
+         * Get the first pit id of each of the player with arithmetic progression.
+         *
+         * @return int value of first pit id.
+         */
+        public int firstPit() {
+            return ((number - 1) * STORE_INDEX) + 1;
         }
     }
 }

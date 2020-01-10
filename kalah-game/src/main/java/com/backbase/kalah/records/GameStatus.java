@@ -143,8 +143,8 @@ public class GameStatus {
             newBuilder.gameStatus.board = IntStream.rangeClosed(1, PIT_COUNT)
                     .mapToObj(index -> {
                         if (index % STORE_INDEX == 0) {
-                            return new SimpleEntry<>(index, "0"); // 0 (zero) value is for initial store value.
-                        } else return new SimpleEntry<>(index, SEEDS_PER_PIT);
+                            return new SimpleEntry<>(index, "0"); // 0 (zero) is the initial seed count in store.
+                        } else return new SimpleEntry<>(index, String.valueOf(SEEDS_PER_PIT));
                     })
                     .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
             return newBuilder;
