@@ -213,14 +213,17 @@ public class GameStatus {
      * the serialization and explicit invocations are available.
      *
      * @param toggle {@code boolean} value to define whether {@link #player} value toggle or not.
-     *                              Varargs has used to avoid unnecessary value pass when {@code toggle}
-     *                              is not required.
+     *               Varargs has used to avoid unnecessary value pass when {@code toggle}
+     *               is not required.
      * @return {@link Player} value of which player is active now.
      */
-    public Player getPlayer(boolean... toggle) {
-        if (toggle != null && toggle[0]) {
-            if (player.equals(PLAYER_1)) return player = PLAYER_2;
-            else return player = PLAYER_1;
+    public Player player(@NotNull boolean... toggle) {
+        if (toggle.length > 0 && toggle[0]) {
+            if (player.equals(PLAYER_1)) {
+                return player = PLAYER_2;
+            } else {
+                return player = PLAYER_1;
+            }
         }
         return player;
     }

@@ -9,3 +9,5 @@ ENV REDIS_HOST redis
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} kalah-game.jar
 ENTRYPOINT java -jar kalah-game.jar
+
+EXPOSE 8080
