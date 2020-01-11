@@ -32,12 +32,13 @@ public class PlayKalah {
      */
     public void makeMove(@NotNull GameStatus gameStatus, final int pickupPitId) {
         final var player = gameStatus.player();
-        if (pickupPitId < 1 || pickupPitId > PIT_COUNT) {
-            throw new InvalidPitUserException("Pit id %d is invalid", pickupPitId);
-        } else if (pickupPitId < player.firstPit() || pickupPitId > player.number() * STORE_INDEX) {
-            throw new InvalidPitUserException("It's the %s's turn", player);
-        } else if (false/*TODO*/) {
 
+        if (pickupPitId < 1 || pickupPitId > PIT_COUNT) {
+            throw new InvalidPitUserException(gameStatus, "Pit id %d is invalid", pickupPitId);
+        } else if (pickupPitId < player.firstPit() || pickupPitId > player.number() * STORE_INDEX) {
+            throw new InvalidPitUserException(gameStatus, "It's the %s's turn", player);
+        } else if (pickupPitId == player.number() * STORE_INDEX) {
+            throw new InvalidPitUserException(gameStatus, "Cannot grab seeds from %s store", pickupPitId);
         }
 
         final var board = Collections.synchronizedMap(gameStatus.getBoard());

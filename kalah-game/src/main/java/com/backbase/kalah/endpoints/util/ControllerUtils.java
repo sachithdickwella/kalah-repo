@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * Class is bound to serve the {@link com.backbase.kalah.endpoints.PlayKalahController} class
  * and other controller classes if any, by providing supplementary functions to achieve the
- * controllers'
+ * controllers' functionality.
  *
  * @author Sachith Dickwella
  */

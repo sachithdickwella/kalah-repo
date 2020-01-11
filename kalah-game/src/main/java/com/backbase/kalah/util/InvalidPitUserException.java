@@ -1,5 +1,7 @@
 package com.backbase.kalah.util;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * The application specific {@link RuntimeException} implementation for represent specific
  * set scenarios. Being a {@code RuntimeException}, {@link InvalidPitUserException} handle
@@ -10,24 +12,33 @@ package com.backbase.kalah.util;
 public class InvalidPitUserException extends RuntimeException {
 
     /**
-     * Constructs a new runtime exception with {@code null} as its
-     * detail message.  The cause is not initialized, and may subsequently be
-     * initialized by a call to {@link #initCause}.
+     * {@link Object} to hold the payload which causes this exception to occur. {@code transient}
+     * to exclude the instance during the {@link InvalidPitUserException} object level serialization
+     * which would never happen in this program.
      */
-    public InvalidPitUserException() {
-        super();
-    }
+    private final transient Object payload;
 
     /**
      * Constructs a new runtime exception with the specified detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      *
-     * @param message the detail message. The detail message is saved for
-     *                later retrieval by the {@link #getMessage()} method.
-     * @param args    to the message to format with the {@link String}.
+     * @param payload the current object status which cause this exception to occur.
+     * @param message the detail message. The detail message is saved for later
+     *                retrieval by the {@link #getMessage()} method.
+     * @param args    the vararg {@link Object} message to format with the {@link String}.
      */
-    public InvalidPitUserException(String message, Object... args) {
+    public InvalidPitUserException(@NotNull Object payload, String message, Object... args) {
         super(String.format(message, args));
+        this.payload = payload;
+    }
+
+    /**
+     * The getter method to {@link #payload} instance variable.
+     *
+     * @return the payload {@link Object}.
+     */
+    public Object getPayload() {
+        return this.payload;
     }
 }

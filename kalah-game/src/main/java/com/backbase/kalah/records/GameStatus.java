@@ -18,8 +18,8 @@ import static com.backbase.kalah.util.ServiceConstance.Player.PLAYER_2;
 import static java.util.AbstractMap.SimpleEntry;
 
 /**
- * This class represent the entire game status as well as the {@link #id} and the
- * {@link #url} values of the game instance.
+ * One of the class instance represent the entire game status as well as the {@link #id}
+ * and the {@link #url} values of the game instance.
  *
  * Implemented the builder pattern to instance creation and management in memory with
  * ease. The objects create with the class are mutable hence ability to change internal
@@ -70,6 +70,13 @@ public class GameStatus {
     private Player player = PLAYER_1;
 
     /**
+     * Default the private constructor to avoid object creations besides the {@link Builder}.
+     */
+    private GameStatus() {
+        // do nothing
+    }
+
+    /**
      * Start the build process of the instance by returning a {@link Builder} instance.
      *
      * @return an instance of {@link Builder} class.
@@ -87,7 +94,7 @@ public class GameStatus {
         /**
          * Instance of {@link GameStatus} class to build.
          */
-        private GameStatus gameStatus;
+        private final GameStatus gameStatus;
 
         /**
          * Initialize the {@link GameStatus} instance in the default constructor.
@@ -102,7 +109,7 @@ public class GameStatus {
          *
          * @param oldBuilder of its own type instance.
          */
-        public Builder(@NotNull Builder oldBuilder) {
+        private Builder(@NotNull Builder oldBuilder) {
             this.gameStatus = GameStatus.builder()
                     .id(oldBuilder.gameStatus.id)
                     .url(oldBuilder.gameStatus.url)
@@ -162,7 +169,7 @@ public class GameStatus {
     }
 
     /**
-     * Getter method of the {@link #id} instance that use by JSON serializer.
+     * The getter method of the {@link #id} instance that use by JSON serializer.
      * No other explicit invocations are available.
      *
      * Decorated with the {@link SuppressWarnings} to ignore the "unused" warning
@@ -176,7 +183,7 @@ public class GameStatus {
     }
 
     /**
-     * Getter method of the {@link #url} instance that use by JSON serializer. No
+     * The getter method of the {@link #url} instance that use by JSON serializer. No
      * explicit invocations available for this method.
      *
      * Decorated with {@link SuppressWarnings} annotation to ignore "unused" warning
@@ -191,7 +198,7 @@ public class GameStatus {
     }
 
     /**
-     * Getter method of the {@link Map} that represent the Kalah game board's current
+     * The getter method of the {@link Map} that represent the Kalah game board's current
      * status by number configurations. No other explicit invocations are available and
      * therefore decorated with {@link SuppressWarnings} to omit the warning.
      *
