@@ -114,7 +114,7 @@ public class PlayKalah {
      * @return {@code boolean} value indicating whether player need to toggle or not.
      */
     private boolean lastPitUpdate(@NotNull Map<Integer, String> board, @NotNull Player player, final int lastPit) {
-        int storeIndex = player.number() * STORE_INDEX;
+        final int storeIndex = player.number() * STORE_INDEX;
         if (lastPit != storeIndex) {
             if (Integer.parseInt(board.get(lastPit)) == 0) {
                 int opponentPit = lastPit < STORE_INDEX ? lastPit + STORE_INDEX : lastPit - STORE_INDEX;
@@ -130,5 +130,20 @@ public class PlayKalah {
             justPut1toPit(board, lastPit);
             return false;
         }
+    }
+
+    /**
+     * Check and update the winner of the game instance using the current board status passed by {@link Map}
+     * instance.
+     *
+     * Continuously check each player's status by getting invoking at the end of each round and least one player
+     * has no seeds to continue his/her round, immediately update the opponent's status by moving all the seeds
+     * of the opponent to the store/kalah.
+     *
+     * @param borad instance of {@link Map} that represent the board.
+     * @param player {@link Player} instance of active player.
+     */
+    private void checkAndUpdateWinner(@NotNull Map<Integer, String> borad, @NotNull Player player) {
+
     }
 }
