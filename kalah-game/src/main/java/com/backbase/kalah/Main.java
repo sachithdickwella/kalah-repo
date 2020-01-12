@@ -12,8 +12,10 @@ import org.springframework.context.annotation.ComponentScan;
  * @author Sachith Dickwella
  */
 @ComponentScan({
+        "com.backbase.kalah",
         "com.backbase.kalah.configs",
-        "com.backbase.kalah.endpoints"
+        "com.backbase.kalah.endpoints",
+        "com.backbase.kalah.repos"
 })
 @EnableAutoConfiguration
 public class Main {
