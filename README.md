@@ -48,7 +48,7 @@ changes you made;
 docker-compose up -d --build
 ```
 
-### Using the services
+### Using the services:
 
 There are two endpoints available with the application in order to fulfill the requirement;
 
@@ -228,4 +228,8 @@ These `error` responses suppose to ease the players' experience during the troub
 
 As this document mentioned earlier, all the game statuses will be saved in a Redis store since the game instance created 
 and each player's movement also be recorded with Redis incrementally and after seven (7) days that instance would be expired 
-and removed despite the game is completed or not.  
+and removed despite the game is completed or not.
+
+### Unit and integration tests:
+
+Service endpoints and aforementioned scenarios are covered with the unit tests.

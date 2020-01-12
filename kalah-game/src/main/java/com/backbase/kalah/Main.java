@@ -2,6 +2,7 @@ package com.backbase.kalah;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -17,7 +18,7 @@ import org.springframework.context.annotation.ComponentScan;
         "com.backbase.kalah.endpoints",
         "com.backbase.kalah.repos"
 })
-@EnableAutoConfiguration
+@SpringBootApplication
 public class Main {
 
     public static void main(String[] args) {
