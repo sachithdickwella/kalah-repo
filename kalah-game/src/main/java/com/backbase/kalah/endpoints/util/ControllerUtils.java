@@ -51,6 +51,7 @@ public class ControllerUtils {
      *                   of {@link StringBuffer} to avoid synchronized behaviour.
      * @return plain {@link GameStatus} instance without initializing the {@link GameStatus.Builder#board()}.
      */
+    @NotNull
     public GameStatus createGame(@NotNull StringBuilder requestUrl) {
         final long randomId = uniqueId(IdGenerator.getRandomId());
         var builder = GameStatus.builder()
@@ -70,6 +71,7 @@ public class ControllerUtils {
      * @param pitId  {@code int} pit id.
      * @return an {@link GameStatus} instance wrapped with {@link Optional} class.
      */
+    @NotNull
     public Optional<GameStatus> moveAndSave(final long gameId, final int pitId) {
         return repo.findById(gameId)
                 .map(gs -> {
