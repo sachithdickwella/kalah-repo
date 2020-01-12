@@ -2,7 +2,6 @@ package com.backbase.kalah;
 
 import com.backbase.kalah.records.GameStatus;
 import com.backbase.kalah.util.InvalidPitUserException;
-import com.backbase.kalah.util.ServiceConstance.Player;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +19,11 @@ import static com.backbase.kalah.util.ServiceConstance.STORE_INDEX;
  */
 @Component
 public class PlayKalah {
+
+    /**
+     * Game board instance of {@link Map} type for this round.
+     */
+    private Map<Integer, String> board;
 
     /**
      * Core game algorithm goes here. Given {@link GameStatus} instance coming from upstream function could
@@ -43,13 +47,14 @@ public class PlayKalah {
             throw new InvalidPitUserException(gameStatus, "Cannot grab seeds from %s store", pickupPitId);
         }
 
-        final var board = Collections.synchronizedMap(gameStatus.getBoard());
-        final int pickedUpSeeds = grabSeeds(board, pickupPitId);
+        board = Collections.synchronizedMap(gameStatus.getBoard());
+        final int pickedUpSeeds = grabSeeds(pickupPitId);
         if (pickedUpSeeds == 0) {
             throw new InvalidPitUserException(gameStatus, "Chosen pit %d, is empty, %s's got another chance",
                     pickupPitId, player);
         }
 
+        boolean togglePlayer = false;
         int nextPitId = pickupPitId + 1;
         for (int i = 1; i <= pickedUpSeeds; i++) {
             if (nextPitId > player.number() * STORE_INDEX) {
@@ -57,28 +62,27 @@ public class PlayKalah {
             }
 
             if (i == pickedUpSeeds) {
-                var shouldToggle = lastPitUpdate(board, player, nextPitId);
-                gameStatus.player(shouldToggle);
+                togglePlayer = lastPitUpdate(gameStatus, nextPitId);
             } else {
                 justPut1toPit(board, nextPitId);
             }
-
             nextPitId++;
         }
+
+        checkAndUpdateWinner(gameStatus);
+        gameStatus.player(togglePlayer);
     }
 
     /**
      * Grab seeds from the pit indicate by the parameter {@code pickupPit} value. By grabbing the seeds in a pit,
      * this function just return the number of seeds as well as empty (zero out) the pit.
      *
-     * @param board     instance of {@link Map} that represent the board.
      * @param pickupPit {@code int} value which pit's seeds should be grabbed and return.
      * @return number seeds {@code int} value in the pit.
      */
-    private int grabSeeds(@NotNull Map<Integer, String> board, final int pickupPit) {
+    private int grabSeeds(final int pickupPit) {
         int seeds = Integer.parseInt(board.get(pickupPit));
         if (seeds > 0) board.put(pickupPit, "0");
-
         return seeds;
     }
 
@@ -108,17 +112,17 @@ public class PlayKalah {
      * If the last pit is not the store/kalah of the player, or the general pit/house is not empty, then, just
      * put single seed into the pit and toggle the player to give the chance to next player.
      *
-     * @param board   instance of {@link Map} that represent the board.
-     * @param player  instance of {@link Player} that represent the currently active player.
-     * @param lastPit {@code int} value of the last pit of the round.
+     * @param gameStatus instance of {@link GameStatus} that represent entire game.
+     * @param lastPit    {@code int} value of the last pit of the round.
      * @return {@code boolean} value indicating whether player need to toggle or not.
      */
-    private boolean lastPitUpdate(@NotNull Map<Integer, String> board, @NotNull Player player, final int lastPit) {
-        final int storeIndex = player.number() * STORE_INDEX;
+    private boolean lastPitUpdate(@NotNull GameStatus gameStatus, final int lastPit) {
+        final int storeIndex = gameStatus.player().number() * STORE_INDEX;
         if (lastPit != storeIndex) {
             if (Integer.parseInt(board.get(lastPit)) == 0) {
-                int opponentPit = lastPit < STORE_INDEX ? lastPit + STORE_INDEX : lastPit - STORE_INDEX;
-                int opponentSeeds = grabSeeds(board, opponentPit);
+                int opponentPit = (gameStatus.otherPlayer().number() * STORE_INDEX) -
+                        (lastPit > STORE_INDEX ? lastPit - STORE_INDEX : lastPit);
+                int opponentSeeds = grabSeeds(opponentPit);
                 int newStoreSeedCount = Integer.parseInt(board.get(storeIndex)) + opponentSeeds + 1;
 
                 board.put(storeIndex, String.valueOf(newStoreSeedCount));
@@ -140,10 +144,29 @@ public class PlayKalah {
      * has no seeds to continue his/her round, immediately update the opponent's status by moving all the seeds
      * of the opponent to the store/kalah.
      *
-     * @param borad instance of {@link Map} that represent the board.
-     * @param player {@link Player} instance of active player.
+     * @param gameStatus instance of {@link GameStatus} that represent entire game.
      */
-    private void checkAndUpdateWinner(@NotNull Map<Integer, String> borad, @NotNull Player player) {
-
+    private void checkAndUpdateWinner(@NotNull final GameStatus gameStatus) {
+        final var player = gameStatus.player();
+        board.entrySet()
+                .parallelStream()
+                .filter(e -> e.getKey() >= player.firstPit() && e.getKey() < player.number() * STORE_INDEX)
+                .mapToInt(e -> Integer.parseInt(e.getValue()))
+                .reduce(Integer::sum)
+                .ifPresent(zeroSum -> {
+                    if (zeroSum == 0) {
+                        var otherPlayer = gameStatus.otherPlayer();
+                        var otherPlayerStore = otherPlayer.number() * STORE_INDEX;
+                        board.entrySet()
+                                .parallelStream()
+                                .filter(e -> e.getKey() >= otherPlayer.firstPit() && e.getKey() < otherPlayerStore)
+                                .mapToInt(e -> grabSeeds(e.getKey()))
+                                .reduce(Integer::sum)
+                                .ifPresent(sum -> board.put(otherPlayerStore,
+                                        String.valueOf(
+                                                Integer.parseInt(board.get(otherPlayerStore)) + sum)
+                                ));
+                    }
+                });
     }
 }

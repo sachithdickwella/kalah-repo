@@ -2,5 +2,5 @@ spring:
   application:
     name: kalah-game
   redis:
-    host: ${env.REDIS_HOST}
+    host: ${REDIS_HOST}
     port: 6379

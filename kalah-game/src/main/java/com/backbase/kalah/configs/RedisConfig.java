@@ -1,5 +1,6 @@
 package com.backbase.kalah.configs;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,6 +21,17 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 public class RedisConfig {
 
     /**
+     * Hostname for the Redis instance.
+     */
+    @Value("${spring.redis.host}")
+    private String host;
+    /**
+     * Port for the Redis instance.
+     */
+    @Value("#{T(Integer).parseInt('${spring.redis.port}')}")
+    private int port;
+
+    /**
      * Create a new instance of {@link LettuceConnectionFactory} to use with {@link RedisTemplate} instance to
      * establish connectivity with Redis node.
      *
@@ -31,7 +43,7 @@ public class RedisConfig {
     @Primary
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(new RedisStandaloneConfiguration());
+        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host, port));
     }
 
     /**
