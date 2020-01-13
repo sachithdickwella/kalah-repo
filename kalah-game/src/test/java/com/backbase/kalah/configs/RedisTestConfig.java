@@ -7,7 +7,6 @@ import redis.embedded.RedisServer;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.IOException;
 
 /**
  * @author Sachith Dickwella
@@ -26,8 +25,7 @@ public class RedisTestConfig {
      *
      * @param port which injects by the {@link org.springframework.context.ApplicationContext}.
      */
-    public RedisTestConfig(@Value("#{T(Integer).parseInt('${test.spring.redis.port}')}") int port)
-            throws IOException {
+    public RedisTestConfig(@Value("#{T(Integer).parseInt('${test.spring.redis.port}')}") int port) {
         this.redisServer = new RedisServer(port);
     }
 
