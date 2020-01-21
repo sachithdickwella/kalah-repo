@@ -11,7 +11,7 @@ The application design consist of two components.
 1. Service application which developed using Spring boot.
 2. Redis persistent module that administer stateful capability of the service endpoints.
 
-####Source code and environment prerequisites:
+### Source code and environment prerequisites:
 
 This application is developed and compiled using Java 11.0.5 LTS version and for successful compilation of the program 
 would require Java 11 or later version. Although, haven't use any experimental feature newly introduced with Java 11.
@@ -19,7 +19,7 @@ would require Java 11 or later version. Although, haven't use any experimental f
 Docker daemon should be up and running and have installed `docker-compose` deploy the `docker-compose.yml` file. Here is 
 [how to install docker-compose](https://docs.docker.com/compose/install/) on you system.
 
-####Prepare to deploy:
+### Prepare to deploy:
 
 Spring application hasn't implemented with any plugin to provision docker images. Although the `docker-compose.yml` file 
 in the project path would give single kick start of the entire environment including the creation of application's docker 
@@ -48,7 +48,7 @@ changes you made;
 docker-compose up -d --build
 ```
 
-####Using the services
+### Using the services:
 
 There are two endpoints available with the application in order to fulfill the requirement;
 
@@ -225,3 +225,11 @@ move with **HTTP 406 Not Acceptable** code and distinguished message;
 }
 ```
 These `error` responses suppose to ease the players' experience during the troubleshooting any user mistake.
+
+As this document mentioned earlier, all the game statuses will be saved in a Redis store since the game instance created 
+and each player's movement also be recorded with Redis incrementally and after seven (7) days that instance would be expired 
+and removed despite the game is completed or not.
+
+### Unit and integration tests:
+
+Service endpoints and aforementioned scenarios are covered with the unit tests.

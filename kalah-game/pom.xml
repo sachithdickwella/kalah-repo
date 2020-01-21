@@ -27,9 +27,9 @@
                 <version>16.0.3</version>
             </dependency>
             <dependency>
-                <groupId>com.github.kstyrc</groupId>
+                <groupId>it.ozimov</groupId>
                 <artifactId>embedded-redis</artifactId>
-                <version>0.6</version>
+                <version>0.7.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -68,7 +68,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.kstyrc</groupId>
+            <groupId>it.ozimov</groupId>
             <artifactId>embedded-redis</artifactId>
             <scope>test</scope>
         </dependency>

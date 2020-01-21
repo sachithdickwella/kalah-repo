@@ -44,7 +44,7 @@ public class PlayKalah {
         } else if (pickupPitId < player.firstPit() || pickupPitId > player.number() * STORE_INDEX) {
             throw new InvalidPitUserException(gameStatus, "It's the %s's turn", player);
         } else if (pickupPitId == player.number() * STORE_INDEX) {
-            throw new InvalidPitUserException(gameStatus, "Cannot grab seeds from %s store", pickupPitId);
+            throw new InvalidPitUserException(gameStatus, "Cannot grab seeds from %d store", pickupPitId);
         }
 
         board = Collections.synchronizedMap(gameStatus.getBoard());
@@ -146,7 +146,7 @@ public class PlayKalah {
      *
      * @param gameStatus instance of {@link GameStatus} that represent entire game.
      */
-    private void checkAndUpdateWinner(@NotNull final GameStatus gameStatus) {
+    void checkAndUpdateWinner(@NotNull final GameStatus gameStatus) {
         final var player = gameStatus.player();
         board.entrySet()
                 .parallelStream()

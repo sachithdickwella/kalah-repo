@@ -1,5 +1,10 @@
 package com.backbase.kalah.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * An interface to store application level constances to avoid repetitions.
  *
@@ -73,5 +78,15 @@ public interface ServiceConstance {
         public int firstPit() {
             return ((number - 1) * STORE_INDEX) + 1;
         }
+    }
+
+    /**
+     * Transform JSON format {@link String} instance to {@link T} type object and return.
+     *
+     * @param tClass to create {@link T} type object.
+     * @return an instance of {@link T} type.
+     */
+    static <T> T jsonToObject(String json, Class<T> tClass) throws JsonProcessingException {
+        return new ObjectMapper().readValue(json, tClass);
     }
 }

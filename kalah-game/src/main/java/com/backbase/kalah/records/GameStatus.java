@@ -187,7 +187,7 @@ public class GameStatus {
      * explicit invocations available for this method.
      *
      * Decorated with {@link SuppressWarnings} annotation to ignore "unused" warning
-     * due the aforementioned no explicit cals.
+     * due the aforementioned no explicit calls.
      *
      * @return {@link String} instance of the incoming request URL particularly
      * represent game instance's endpoint with the {@link #id} value.
@@ -217,7 +217,7 @@ public class GameStatus {
      * progress, if the {@code toggle} parameter value is {@code true}.
      *
      * Don't require conventional getter method though, hence, {@link #player} is ignored during
-     * the serialization and explicit invocations are available.
+     * the serialization and explicit invocations are available except in unit tests.
      *
      * @param toggle {@code boolean} value to define whether {@link #player} value toggle or not.
      *               Varargs has used to avoid unnecessary value pass when {@code toggle} is not
